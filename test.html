@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>Google Maps Multiple Markers</title>
+    <script src="http://maps.google.com/maps/api/js?key=AIzaSyAaZ3o0jRqMbVb3ZqWITtJqBBNoRVK8PSM"
+        type="text/javascript"></script>
+</head>
+
+<body>
+    <div id="map" style="width: 100vw; height: 100vw;"></div>
+
+    <script type="text/javascript">
+
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 18,
+            center: new google.maps.LatLng(42.35811842929876, -71.09430461861642),
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+        // if (navigator.geolocation) {
+        //     navigator.geolocation.getCurrentPosition(function (position) {
+        //         initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+        //         map.setCenter(initialLocation);
+        //     });
+        // }   
+        var infowindow = new google.maps.InfoWindow();
+
+        var marker, i;
+
+
+        const polys = [[
+            { lat: 42.35899431324309, lng: -71.0942231059981 },
+            { lat: 42.35868269600278, lng: -71.09509395165244 },
+            { lat: 42.359090584926214, lng: -71.09537166224713 },
+            { lat: 42.35938696757929, lng: -71.09444596683132 }
+        ], [
+
+            { lat: 42.359490011430786, lng: -71.09357521772905 },
+            { lat: 42.35893109345661, lng: -71.09323725939153 },
+            { lat: 42.35901074694568, lng: -71.09294085162873 },
+            { lat: 42.35966475799285, lng: -71.09320763347107 }
+        ],
+        [
+            { lat: 42.35899404800852, lng: - 71.09326339507399 },
+            { lat: 42.358355409735864, lng: -71.09282974832604 },
+            { lat: 42.358436000100056, lng: -71.0926244844925 },
+            { lat: 42.35905025689788, lng: -71.09301275643122 }]
+        ];
+
+        let infoWindow;
+
+        const opacity = [0.05, 0.5, 0.8]
+        for (i = 0; i < polys.length; i++) {
+            const poly = new google.maps.Polygon({
+                paths: polys[i],
+                strokeColor: "#FF0000",
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: "#FF0000",
+                fillOpacity: opacity[i],
+            });
+
+            poly.setMap(map);
+            poly.addListener("click", showArrays);
+            infoWindow = new google.maps.InfoWindow();
+
+        }
+
+        const map1 = new Map();
+        map1.set(0.05, 0);
+        map1.set(0.5, 1);
+        map1.set(0.8, 2);
+
+        messages = ["Little to No People <br> No wait time", "Some People Here<br> Expect ~10 minute waits ", "Very crowded<br> Expect hour-long wait times<br>Remember to stay 6 feet away from others"]
+        texts = ["<b>Straton Center</b><br>", "<b>Building 7</b><br>", "<b>Building 5   </b><br>"]
+        function showArrays(event) {
+            const polygon = this;
+            const vertices = polygon.getPath();
+
+            let contentString =
+                texts[map1.get(polygon.fillOpacity)] + messages[map1.get(polygon.fillOpacity)];
+
+
+            infoWindow.setContent(contentString);
+            infoWindow.setPosition(event.latLng);
+            infoWindow.open(map);
+        }
+
+    </script>
+</body>
+
+</html>
